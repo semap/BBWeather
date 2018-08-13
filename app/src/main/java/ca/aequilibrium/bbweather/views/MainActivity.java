@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -16,6 +17,7 @@ import java.util.List;
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
+import ca.aequilibrium.bbweather.views.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         subscribeToBookmarkedLocations();
-
+        showHome();
     }
 
     @Override
@@ -47,6 +49,25 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel.loadBookmarkedLocations();
 
+    }
+
+    private void showHome() {
+        Fragment homeFragment = new HomeFragment();
+        createFragment(homeFragment);
+        showFragment(homeFragment);
+    }
+
+
+    private void createFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    private void showFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .show(fragment)
+                .commit();
     }
 
 }
