@@ -1,15 +1,16 @@
 package ca.aequilibrium.bbweather.services;
 
 
+import ca.aequilibrium.bbweather.BBWeatherApplication;
 
 public class ServiceContext {
-    public static BookmarkedLocationService bookmarkedCityManager = new BookmarkedLocationServiceImpl();
+    public static BookmarkedLocationService bookmarkedLocationService = new BookmarkedLocationServiceImpl(BBWeatherApplication.getAppContext());
 
-    public static BookmarkedLocationService getBookmarkedCityManager() {
-        return bookmarkedCityManager;
+    public static BookmarkedLocationService getBookmarkedLocationService() {
+        return bookmarkedLocationService;
     }
 
-    public static void setBookmarkedCityManager(BookmarkedLocationService bookmarkedCityManager) {
-        ServiceContext.bookmarkedCityManager = bookmarkedCityManager;
+    public static void setBookmarkedLocationService(BookmarkedLocationService bookmarkedLocationService) {
+        ServiceContext.bookmarkedLocationService = bookmarkedLocationService;
     }
 }

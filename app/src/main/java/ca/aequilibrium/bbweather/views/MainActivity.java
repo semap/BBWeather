@@ -27,28 +27,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        subscribeToBookmarkedLocations();
         showHome();
     }
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
         return super.onCreateView(parent, name, context, attrs);
-    }
-
-    private void subscribeToBookmarkedLocations() {
-        HomeViewModel viewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-
-        viewModel.getBookmarkedCityObservable().observe(this, new Observer<List<BookmarkedCity>>() {
-            @Override
-            public void onChanged(@Nullable List<BookmarkedCity> bookmarkedCities) {
-                Log.i(TAG, "count: " +  bookmarkedCities.size());
-
-            }
-        });
-
-        viewModel.loadBookmarkedLocations();
-
     }
 
     private void showHome() {

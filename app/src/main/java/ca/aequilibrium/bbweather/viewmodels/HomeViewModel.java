@@ -5,22 +5,26 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.Transformations;
+import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
+import ca.aequilibrium.bbweather.models.Location;
 import ca.aequilibrium.bbweather.services.BookmarkedLocationService;
+import ca.aequilibrium.bbweather.services.ResultCallback;
 import ca.aequilibrium.bbweather.services.ServiceContext;
 import ca.aequilibrium.bbweather.utils.SingleLiveEvent;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 
 public class HomeViewModel extends AndroidViewModel {
 
-    private SingleLiveEvent<Void> loadBookmarkedLocations = new SingleLiveEvent<>();
     private LiveData<List<BookmarkedCity>> bookmarkedCityObservable;
     private MutableLiveData<String> errorObservable;
 
@@ -28,32 +32,24 @@ public class HomeViewModel extends AndroidViewModel {
 
     public HomeViewModel(@NonNull final Application application) {
         super(application);
-        this.bookmarkedLocationService = ServiceContext.getBookmarkedCityManager();
+        this.bookmarkedLocationService = ServiceContext.getBookmarkedLocationService();
+        this.errorObservable = new SingleLiveEvent<String>();
+    }
 
-        bookmarkedCityObservable = Transformations.switchMap(loadBookmarkedLocations, new Function<Void, LiveData<List<BookmarkedCity>>>() {
+    public LiveData<List<BookmarkedCity>> getBookmarkedCityObservable() {
+        return bookmarkedLocationService.getBookmarkedCities();
+    }
+
+    public void addBookmarkedLocationByLocation(Location location) {
+        this.bookmarkedLocationService.addBookmarkedCityByLocation(location, new ResultCallback<BookmarkedCity>() {
             @Override
-            public LiveData<List<BookmarkedCity>> apply(Void input) {
-                LiveData<TaskResult<List<BookmarkedCity>>> results = bookmarkedLocationService.getAll();
-                return Transformations.map(results, new Function<TaskResult<List<BookmarkedCity>>, List<BookmarkedCity>>() {
-                    @Override
-                    public List<BookmarkedCity> apply(TaskResult<List<BookmarkedCity>> input) {
-                        if (input.error == null) {
-                            return input.result;
-                        }
-                        errorObservable.setValue("error");
-                        return new ArrayList<>();
-                    }
-                });
+            public void callback(TaskResult<BookmarkedCity> taskResult) {
+                if (taskResult.error != null) {
+                    errorObservable.setValue("Failed to add the bookmark");
+                }
             }
         });
     }
 
-    public LiveData<List<BookmarkedCity>> getBookmarkedCityObservable() {
-        return bookmarkedCityObservable;
-    }
-
-    public void loadBookmarkedLocations() {
-        loadBookmarkedLocations.call();
-    }
 
 }
