@@ -3,7 +3,7 @@ package ca.aequilibrium.bbweather.models;
 public class BookmarkedCity {
     private String id;
     private String name;
-    private Location location;
+    private Coord coord;
 
     public String getId() {
         return id;
@@ -21,12 +21,12 @@ public class BookmarkedCity {
         this.name = name;
     }
 
-    public Location getLocation() {
-        return location;
+    public Coord getLocation() {
+        return coord;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setCoord(Coord coord) {
+        this.coord = coord;
     }
 
     @Override
@@ -38,14 +38,14 @@ public class BookmarkedCity {
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return location != null ? location.equals(that.location) : that.location == null;
+        return coord != null ? coord.equals(that.coord) : that.coord == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (coord != null ? coord.hashCode() : 0);
         return result;
     }
 }

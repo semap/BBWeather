@@ -3,9 +3,7 @@ package ca.aequilibrium.bbweather.views.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,19 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.Manifest.permission;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
-import ca.aequilibrium.bbweather.models.Location;
+import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
 
 /**
@@ -113,7 +108,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         Log.d(TAG, "user long clicks on the map");
 
         // the logic of parsing the latitude and longitude should not be here in the presentation layer
-        mHomeViewModel.addBookmarkedLocationByLocation(new Location(latLng.latitude, latLng.longitude));
+        mHomeViewModel.addBookmarkedLocationByCoord(new Coord(latLng.latitude, latLng.longitude));
     }
 
     private void subscribeToBookmarkedLocations() {

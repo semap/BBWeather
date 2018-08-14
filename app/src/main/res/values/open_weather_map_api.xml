@@ -1,0 +1,6 @@
+<resources>
+    <string name="open_weather_map_api_key" templateMergeStrategy="preserve" translatable="false">c6e381d8c7ff98f0fee43775817cf6ad</string>
+    <string name="open_weather_map_base_url" templateMergeStrategy="preserve" translatable="false">http://api.openweathermap.org/data/2.5</string>
+    <string name="open_weather_map_current_weather_path" templateMergeStrategy="preserve" translatable="false">weather</string>
+    <string name="open_weather_map_forecast_path" templateMergeStrategy="preserve" translatable="false">forecast</string>
+</resources>
