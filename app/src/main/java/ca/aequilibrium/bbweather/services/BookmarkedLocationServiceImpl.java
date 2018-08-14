@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
-import ca.aequilibrium.bbweather.models.Location;
+import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 
 /**
@@ -56,15 +56,15 @@ public class BookmarkedLocationServiceImpl implements BookmarkedLocationService 
     }
 
     @Override
-    public void addBookmarkedCityByLocation(Location location, ResultCallback<BookmarkedCity> resultCallback) {
+    public void addBookmarkedCityByLocation(Coord coord, ResultCallback<BookmarkedCity> resultCallback) {
         try {
-            String cityName = mapToCityName(location);
+            String cityName = mapToCityName(coord);
             if (cityName == null) {
                 cityName = UNKWOWN_CITY_NAME;
             }
             BookmarkedCity city = new BookmarkedCity();
             city.setId(UUID.randomUUID().toString());
-            city.setLocation(location);
+            city.setCoord(coord);
             city.setName(cityName);
             List<BookmarkedCity> list = bookmarkedCity.getValue();
             list.add(city);
@@ -126,11 +126,11 @@ public class BookmarkedLocationServiceImpl implements BookmarkedLocationService 
         return bookmarkedCity;
     }
 
-    private String mapToCityName(Location location) throws IOException {
+    private String mapToCityName(final Coord location) throws IOException {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         String cityName = null;
-        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        List<Address> addresses = geocoder.getFromLocation(location.getLat(), location.getLon(), 1);
         if (addresses.isEmpty()) {
             cityName = null;
         } else {

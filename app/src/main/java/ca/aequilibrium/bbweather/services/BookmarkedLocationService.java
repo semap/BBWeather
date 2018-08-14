@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
-import ca.aequilibrium.bbweather.models.Location;
+import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 
 
@@ -17,7 +17,7 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
  */
 public interface BookmarkedLocationService {
 
-    void addBookmarkedCityByLocation(Location location, ResultCallback<BookmarkedCity> resultCallback);
+    void addBookmarkedCityByLocation(Coord coord, ResultCallback<BookmarkedCity> resultCallback);
 
     // remove a bookmarked city
     void remove(BookmarkedCity bookmarkedCity, ResultCallback<Boolean> resultCallback);

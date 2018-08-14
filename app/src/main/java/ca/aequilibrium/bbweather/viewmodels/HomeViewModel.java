@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
-import ca.aequilibrium.bbweather.models.Location;
+import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.services.BookmarkedLocationService;
 import ca.aequilibrium.bbweather.services.ResultCallback;
 import ca.aequilibrium.bbweather.services.ServiceContext;
@@ -40,8 +40,8 @@ public class HomeViewModel extends AndroidViewModel {
         return bookmarkedLocationService.getBookmarkedCities();
     }
 
-    public void addBookmarkedLocationByLocation(Location location) {
-        this.bookmarkedLocationService.addBookmarkedCityByLocation(location, new ResultCallback<BookmarkedCity>() {
+    public void addBookmarkedLocationByCoord(Coord coord) {
+        this.bookmarkedLocationService.addBookmarkedCityByLocation(coord, new ResultCallback<BookmarkedCity>() {
             @Override
             public void callback(TaskResult<BookmarkedCity> taskResult) {
                 if (taskResult.error != null) {
