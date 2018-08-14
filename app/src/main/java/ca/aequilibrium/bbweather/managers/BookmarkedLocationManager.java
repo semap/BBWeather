@@ -1,4 +1,4 @@
-package ca.aequilibrium.bbweather.services;
+package ca.aequilibrium.bbweather.managers;
 
 import android.arch.lifecycle.LiveData;
 
@@ -14,7 +14,7 @@ import ca.aequilibrium.bbweather.utils.ResultCallback;
  * It can be on the cloud or a local file or a local database, which means the requests can be Sync or Async.
  * So there is a ResultCallback parameter to handle the result (especially when there is an error)
  */
-public interface BookmarkedLocationService {
+public interface BookmarkedLocationManager {
 
     void addBookmarkedCityByLocation(Coord coord, ResultCallback<BookmarkedCity> resultCallback);
 
@@ -23,6 +23,6 @@ public interface BookmarkedLocationService {
 
     void removeAll(ResultCallback<Boolean> resultCallback);
 
-    // The observable of the bookmarkedCities, this is the majoy "output" of the this service
+    // The observable of the bookmarkedCities, this is the majoy "output" of the this manager
     LiveData<List<BookmarkedCity>> getBookmarkedCities();
 }

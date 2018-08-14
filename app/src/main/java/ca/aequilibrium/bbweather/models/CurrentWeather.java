@@ -1,8 +1,11 @@
 package ca.aequilibrium.bbweather.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CurrentWeather {
     private Coord coord;
-    private Weather weather;
+    private List<Weather> weather = new ArrayList<>();
     private Main main;
     private Wind wind;
     private Clouds clouds;
@@ -21,11 +24,11 @@ public class CurrentWeather {
         this.coord = coord;
     }
 
-    public Weather getWeather() {
+    public List<Weather> getWeather() {
         return weather;
     }
 
-    public void setWeather(Weather weather) {
+    public void setWeather(List<Weather> weather) {
         this.weather = weather;
     }
 

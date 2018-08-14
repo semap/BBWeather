@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Rain {
     @SerializedName("3h")
-    private int volume;
+    private double volume;
 
-    public int getVolume() {
+    public double getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
+    public void setVolume(double volume) {
         this.volume = volume;
     }
 
@@ -21,11 +21,12 @@ public class Rain {
 
         Rain rain = (Rain) o;
 
-        return volume == rain.volume;
+        return Double.compare(rain.volume, volume) == 0;
     }
 
     @Override
     public int hashCode() {
-        return volume;
+        long temp = Double.doubleToLongBits(volume);
+        return (int) (temp ^ (temp >>> 32));
     }
 }
