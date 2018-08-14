@@ -1,4 +1,4 @@
-package ca.aequilibrium.bbweather.services;
+package ca.aequilibrium.bbweather.utils;
 
 
 import ca.aequilibrium.bbweather.utils.TaskResult;

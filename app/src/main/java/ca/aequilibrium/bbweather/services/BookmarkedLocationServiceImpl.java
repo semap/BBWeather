@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
+import ca.aequilibrium.bbweather.utils.ResultCallback;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 
 /**

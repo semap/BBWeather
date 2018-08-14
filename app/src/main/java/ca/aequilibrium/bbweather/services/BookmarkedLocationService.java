@@ -1,13 +1,12 @@
 package ca.aequilibrium.bbweather.services;
 
 import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
 
 import java.util.List;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
-import ca.aequilibrium.bbweather.utils.TaskResult;
+import ca.aequilibrium.bbweather.utils.ResultCallback;
 
 
 /**
