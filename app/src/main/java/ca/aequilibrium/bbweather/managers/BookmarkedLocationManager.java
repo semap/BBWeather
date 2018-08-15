@@ -39,8 +39,14 @@ public interface BookmarkedLocationManager {
      */
     void removeAll(ResultCallback<Integer> resultCallback);
 
-    // The observable of the bookmarkedCities, this is the majoy "output" of the this manager
+    /**
+     * Given a name, return the Coord (Lat/Lng) of the name.
+     * @param name
+     * @param resultCallback
+     */
+    void getCoordFromName(String name, ResultCallback<Coord> resultCallback);
 
+    // The observable of the bookmarkedCities, this is the majoy "output" of the this manager
     /**
      * The LiveData which keeps the list of the BookmarkedCity. Whenever a list is modified,
      *  the liveDate will emit a new element to notify the observers.

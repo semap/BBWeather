@@ -15,14 +15,13 @@ import android.widget.Toast;
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.utils.Message;
-import ca.aequilibrium.bbweather.viewmodels.CityViewModel;
 import ca.aequilibrium.bbweather.viewmodels.SettingsViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFragment extends Fragment {
-
+    public static final String TAG = SettingsFragment.class.getSimpleName();
     private SettingsViewModel settingsViewModel;
     private Switch unitSwitch;
 

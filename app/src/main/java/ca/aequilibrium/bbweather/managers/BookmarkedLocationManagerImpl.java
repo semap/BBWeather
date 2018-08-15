@@ -16,6 +16,7 @@ import ca.aequilibrium.bbweather.utils.ResultCallback;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 import ca.aequilibrium.bbweather.utils.asynctasks.CallbackAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.GeocodeBookmarkedCityAsyncTask;
+import ca.aequilibrium.bbweather.utils.asynctasks.GeocodeSearchNameAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.LoadBookmarkedCitiesAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.SaveBookmarkedCitiesAsyncTask;
 
@@ -101,6 +102,12 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
                 }
             }
         });
+    }
+
+    @Override
+    public void getCoordFromName(String name, ResultCallback<Coord> resultCallback) {
+        CallbackAsyncTask<String, Void, Coord> task = new GeocodeSearchNameAsyncTask(context, resultCallback);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, name);
     }
 
     @Override

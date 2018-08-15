@@ -59,6 +59,10 @@ public class HomeViewModel extends AndroidViewModel {
         });
     }
 
+    public void getCoordFromName(String name, ResultCallback<Coord> resultCallback) {
+        this.bookmarkedLocationManager.getCoordFromName(name, resultCallback);
+    }
+
     public SingleLiveEvent<Message> getMessageObservable() {
         return messageObservable;
     }
