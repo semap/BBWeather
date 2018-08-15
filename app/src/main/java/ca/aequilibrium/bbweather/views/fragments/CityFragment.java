@@ -27,7 +27,7 @@ import ca.aequilibrium.bbweather.viewmodels.CityViewModel;
  */
 public class CityFragment extends Fragment {
 
-    private static final String TAG = CityFragment.class.getSimpleName();
+    public static final String TAG = CityFragment.class.getSimpleName();
 
     private CityViewModel cityViewModel;
 

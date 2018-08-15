@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     public HomeFragment() {
+        Log.d(TAG, "Create HomeFragment");
         // Required empty public constructor
     }
 
@@ -53,7 +55,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
 
         mMapView = view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
         mMapView.getMapAsync(this);
 
         mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -65,13 +66,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
     }
-
 
     private void createMap() {
         requestPermissionIfNecessary();
-
     }
 
     private void requestPermissionIfNecessary() {
@@ -97,6 +95,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mMapView.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onDestroy() {
         mMapView.onDestroy();
         super.onDestroy();
@@ -109,6 +113,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
 
         // the logic of parsing the latitude and longitude should not be here in the presentation layer
         mHomeViewModel.addBookmarkedLocationByCoord(new Coord(latLng.latitude, latLng.longitude));
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        Fragment cityFragment = fragmentManager.findFragmentByTag(CityFragment.TAG);
+        if (cityFragment == null) {
+            cityFragment = new CityFragment();
+        }
+        fragmentManager.beginTransaction()
+                .add(R.id.fragment_container, cityFragment, CityFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+
+
     }
 
     private void subscribeToBookmarkedLocations() {
