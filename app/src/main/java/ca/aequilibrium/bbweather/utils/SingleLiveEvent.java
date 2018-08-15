@@ -3,11 +3,11 @@ package ca.aequilibrium.bbweather.utils;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
+import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import android.support.annotation.MainThread;
-import android.support.annotation.Nullable;
 
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
 

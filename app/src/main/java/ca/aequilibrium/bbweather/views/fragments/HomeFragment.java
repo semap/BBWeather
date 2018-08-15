@@ -1,9 +1,13 @@
 package ca.aequilibrium.bbweather.views.fragments;
 
 
+import android.Manifest.permission;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,12 +20,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.Manifest.permission;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -40,13 +45,11 @@ import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapterListener;
 public class HomeFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, BookmarkedCitiesAdapterListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-
+    private static final int REQUEST_LOCATION_PERMISSIONS = 102;
     private MapView mapView;
     private GoogleMap googleMap;
     private HomeViewModel homeViewModel;
     private BookmarkedCitiesAdapter bookmarkedCitiesAdapter;
-
-    private static final int REQUEST_LOCATION_PERMISSIONS = 102;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,29 +74,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void createMap() {
-        requestPermissionIfNecessary();
-    }
-
-    private void requestPermissionIfNecessary() {
-        if (ActivityCompat.checkSelfPermission(getContext(), permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(
-                    new String[] { permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_LOCATION_PERMISSIONS
-            );
-        }
-    }
-
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        requestPermissionIfNecessary();
         this.googleMap.setOnMapLongClickListener(this);
+
+        if (ActivityCompat.checkSelfPermission(getContext(), permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{permission.ACCESS_FINE_LOCATION, permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_LOCATION_PERMISSIONS);
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .zoom(8.0f)
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                    .build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+
     }
 
     @Override
@@ -114,6 +119,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         super.onDestroy();
     }
 
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length == 2) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                onMapReady(googleMap);
+            }
+        }
+    }
 
     @Override
     public void onMapLongClick(final LatLng latLng) {
@@ -132,7 +147,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
                     Log.e(TAG, "unable to load bookmarked cities");
                 } else {
                     bookmarkedCitiesAdapter.setBookmarkedCities(bookmarkedCities);
-                    Log.i(TAG, "count: " +  bookmarkedCities.size());
+                    Log.i(TAG, "count: " + bookmarkedCities.size());
                 }
             }
         });

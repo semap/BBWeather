@@ -6,11 +6,11 @@ public class TaskResult<T> {
 
     public TaskResult(T result) {
         this.result = result;
-        this.error  = null;
+        this.error = null;
     }
 
     public TaskResult(Exception error) {
         this.result = null;
-        this.error  = error;
+        this.error = error;
     }
 }

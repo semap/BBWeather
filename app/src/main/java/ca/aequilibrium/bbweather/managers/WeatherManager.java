@@ -7,5 +7,6 @@ import ca.aequilibrium.bbweather.utils.ResultCallback;
 
 public interface WeatherManager {
     void getCurrentWeather(Coord coord, Boolean isMetric, ResultCallback<CurrentWeather> resultCallback);
+
     void getForecasts(Coord coord, Boolean isMetric, ResultCallback<ForecastInfo> resultCallback);
 }

@@ -16,11 +16,11 @@ import android.util.Log;
 import java.util.List;
 
 import ca.aequilibrium.bbweather.managers.ImageManager;
+import ca.aequilibrium.bbweather.managers.ManagerContext;
+import ca.aequilibrium.bbweather.managers.WeatherManager;
 import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.models.CurrentWeather;
 import ca.aequilibrium.bbweather.models.ForecastInfo;
-import ca.aequilibrium.bbweather.managers.ManagerContext;
-import ca.aequilibrium.bbweather.managers.WeatherManager;
 import ca.aequilibrium.bbweather.models.Weather;
 import ca.aequilibrium.bbweather.utils.DistinctUntilChangedObserver;
 import ca.aequilibrium.bbweather.utils.Message;
@@ -66,6 +66,7 @@ public class CityViewModel extends AndroidViewModel {
 
     /**
      * Combine the latest from coord and isMetric. And invoke the getCurentWeather whenever their is a new element.
+     *
      * @return
      */
     private MediatorLiveData<CurrentWeather> combineLatestCoordAndIsMetric() {
