@@ -9,6 +9,7 @@ import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ca.aequilibrium.bbweather.Constants;
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.utils.ImageCache;
 import ca.aequilibrium.bbweather.utils.ResultCallback;
@@ -65,7 +66,7 @@ public class ImageManagerImpl implements ImageManager {
 
     @Override
     public void getWeatherImage(final String name, final ResultCallback<Bitmap> resultCallback) {
-        String url = context.getString(R.string.open_weather_map_icon_base_url) + "/" + name + ".png";
+        String url = Constants.OPEN_WEATHER_MAP_ICON_BASE_URL + "/" + name + ".png";
         getImage(url, resultCallback);
     }
 }
