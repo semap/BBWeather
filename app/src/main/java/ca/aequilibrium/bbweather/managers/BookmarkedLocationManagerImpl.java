@@ -81,8 +81,9 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
     }
 
     @Override
-    public void removeAll(final ResultCallback<Boolean> resultCallback) {
-
+    public void removeAll(final ResultCallback<Integer> resultCallback) {
+        List<BookmarkedCity> oldList = this.bookmarkedCities.getValue();
+        final Integer count = oldList == null ? 0 : oldList.size();
         List<BookmarkedCity> list = new ArrayList<>();
 
         asyncSaveBookmarkedCities(list, new ResultCallback<List<BookmarkedCity>>() {
@@ -90,12 +91,12 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
             public void callback(@NonNull TaskResult<List<BookmarkedCity>> taskResult) {
                 if (taskResult.error != null) {
                     if (resultCallback != null) {
-                        resultCallback.callback(new TaskResult<Boolean>(taskResult.error));
+                        resultCallback.callback(new TaskResult<Integer>(taskResult.error));
                     }
                 } else {
                     bookmarkedCities.postValue(taskResult.result);
                     if (resultCallback != null) {
-                        resultCallback.callback(new TaskResult<>(true));
+                        resultCallback.callback(new TaskResult<>(count));
                     }
                 }
             }

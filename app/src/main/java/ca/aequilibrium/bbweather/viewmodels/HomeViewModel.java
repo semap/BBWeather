@@ -19,7 +19,6 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
 
 public class HomeViewModel extends AndroidViewModel {
 
-    private LiveData<List<BookmarkedCity>> bookmarkedCityObservable;
     private SingleLiveEvent<Message> messageObservable;
 
     private BookmarkedLocationManager bookmarkedLocationManager;

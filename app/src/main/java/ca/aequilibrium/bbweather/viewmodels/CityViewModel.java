@@ -32,8 +32,7 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
 
 public class CityViewModel extends AndroidViewModel {
     private static final String TAG = CityViewModel.class.getSimpleName();
-    private static final String USER_SETTINGS = "user_settings";
-    private static final String IS_METRIC_SETTING_KEY = "is_metric";
+
 
     // The input properties, those properties will drive the output of this viewModel
     private LiveData<Boolean> isMetric;     // the input values are from SharedPreferenceLiveData
@@ -58,8 +57,8 @@ public class CityViewModel extends AndroidViewModel {
         this.messageObservable = new SingleLiveEvent<>();
         this.coord = new MutableLiveData<>();
         this.forecastInfo = new MutableLiveData<>();
-        SharedPreferences sharedPreferences = application.getSharedPreferences(USER_SETTINGS, Context.MODE_PRIVATE);
-        this.isMetric = SharedPreferenceLiveData.booleanLiveData(sharedPreferences, IS_METRIC_SETTING_KEY, true);
+        SharedPreferences sharedPreferences = application.getSharedPreferences(SettingsViewModel.USER_SETTINGS, Context.MODE_PRIVATE);
+        this.isMetric = SharedPreferenceLiveData.booleanLiveData(sharedPreferences, SettingsViewModel.IS_METRIC_SETTING_KEY, true);
         this.currentWeather = combineLatestCoordAndIsMetric();
         this.weatherIcon = new MutableLiveData<>();
     }
