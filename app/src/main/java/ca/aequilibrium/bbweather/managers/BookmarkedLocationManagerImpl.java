@@ -30,12 +30,12 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
     // the Context is for getting Geocoder, it is needed for decode the LatLng
     private Context context;
 
-    private final MutableLiveData<List<BookmarkedCity>> bookmarkedCity;
+    private final MutableLiveData<List<BookmarkedCity>> bookmarkedCities;
 
 
     public BookmarkedLocationManagerImpl(final Context context) {
         this.context = context;
-        this.bookmarkedCity = new MutableLiveData<>();
+        this.bookmarkedCities = new MutableLiveData<>();
         this.initBookmarkedCities();
     }
 
@@ -60,9 +60,9 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
     }
 
     @Override
-    public void remove(BookmarkedCity bookmarkedCity, final ResultCallback<Boolean> resultCallback) {
+    public void remove(final BookmarkedCity bookmarkedCity, final ResultCallback<Boolean> resultCallback) {
 
-        List<BookmarkedCity> list = this.bookmarkedCity.getValue();
+        List<BookmarkedCity> list = this.bookmarkedCities.getValue();
         list.remove(bookmarkedCity);
 
         asyncSaveBookmarkedCities(list, new ResultCallback<List<BookmarkedCity>>() {
@@ -73,6 +73,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
                         resultCallback.callback(new TaskResult<Boolean>(taskResult.error));
                     }
                 } else {
+                    bookmarkedCities.postValue(taskResult.result);
                     if (resultCallback != null) {
                         resultCallback.callback(new TaskResult<>(true));
                     }
@@ -94,6 +95,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
                         resultCallback.callback(new TaskResult<Boolean>(taskResult.error));
                     }
                 } else {
+                    bookmarkedCities.postValue(taskResult.result);
                     if (resultCallback != null) {
                         resultCallback.callback(new TaskResult<>(true));
                     }
@@ -104,7 +106,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
 
     @Override
     public LiveData<List<BookmarkedCity>> getBookmarkedCities() {
-        return bookmarkedCity;
+        return bookmarkedCities;
     }
 
     /**
@@ -113,7 +115,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
      * @param resultCallback
      */
     private void insertBookmarkedCity(final BookmarkedCity city, final ResultCallback<BookmarkedCity> resultCallback) {
-        final List<BookmarkedCity> list = bookmarkedCity.getValue();
+        final List<BookmarkedCity> list = bookmarkedCities.getValue();
         list.add(city);
 
         asyncSaveBookmarkedCities(list, new ResultCallback<List<BookmarkedCity>>() {
@@ -124,7 +126,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
                         resultCallback.callback(new TaskResult<BookmarkedCity>(taskResult.error));
                     }
                 } else {
-                    bookmarkedCity.postValue(taskResult.result);
+                    bookmarkedCities.postValue(taskResult.result);
                     if (resultCallback != null) {
                         resultCallback.callback(new TaskResult<>(city));
                     }
@@ -153,9 +155,9 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
             public void callback(@NonNull TaskResult<List<BookmarkedCity>> taskResult) {
                 if (taskResult.error != null) {
                     // the null value indicates that there was a exception when init, the presentation layout should handle it.
-                    bookmarkedCity.postValue(null);
+                    bookmarkedCities.postValue(null);
                 } else {
-                    bookmarkedCity.postValue(taskResult.result);
+                    bookmarkedCities.postValue(taskResult.result);
                 }
             }
         });

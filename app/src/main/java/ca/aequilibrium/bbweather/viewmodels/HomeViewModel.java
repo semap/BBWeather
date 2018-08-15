@@ -34,14 +34,27 @@ public class HomeViewModel extends AndroidViewModel {
         return bookmarkedLocationManager.getBookmarkedCities();
     }
 
-    public void addBookmarkedLocationByCoord(Coord coord) {
+    public void addBookmarkedCityByCoord(final Coord coord) {
         this.bookmarkedLocationManager.addBookmarkedCityByLocation(coord, new ResultCallback<BookmarkedCity>() {
             @Override
             public void callback(TaskResult<BookmarkedCity> taskResult) {
                 if (taskResult.error != null) {
-                    messageObservable.setValue(new Message("Failed to add the bookmark", MessageType.ERROR));
+                    messageObservable.setValue(new Message("Failed to create the bookmark", MessageType.ERROR));
                 } else {
-                    messageObservable.setValue(new Message("Bookmark created", MessageType.INFO));
+                    messageObservable.setValue(new Message("Bookmark " + taskResult.result.getName() + " created", MessageType.INFO));
+                }
+            }
+        });
+    }
+
+    public void removeBookmarkedCity(final BookmarkedCity bookmarkedCity) {
+        this.bookmarkedLocationManager.remove(bookmarkedCity, new ResultCallback<Boolean>() {
+            @Override
+            public void callback(@NonNull TaskResult<Boolean> taskResult) {
+                if (taskResult.error != null) {
+                    messageObservable.setValue(new Message("Failed to remove the bookmark", MessageType.ERROR));
+                } else {
+                    messageObservable.setValue(new Message("Bookmark deleted", MessageType.INFO));
                 }
             }
         });

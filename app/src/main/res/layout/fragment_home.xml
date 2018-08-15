@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/background_light"
     tools:context=".views.fragments.HomeFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/bookmarked_cities"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="94dp"
+        android:layout_alignParentTop="true"
+        android:overScrollMode="never" />
+</RelativeLayout>

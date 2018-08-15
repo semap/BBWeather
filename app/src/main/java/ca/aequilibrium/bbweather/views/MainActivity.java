@@ -12,7 +12,6 @@ import android.view.View;
 
 
 import ca.aequilibrium.bbweather.R;
-import ca.aequilibrium.bbweather.views.fragments.CityFragment;
 import ca.aequilibrium.bbweather.views.fragments.HelpFragment;
 import ca.aequilibrium.bbweather.views.fragments.HomeFragment;
 import ca.aequilibrium.bbweather.views.fragments.SettingsFragment;
@@ -20,7 +19,9 @@ import ca.aequilibrium.bbweather.views.fragments.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String SELECTED_NAV_ID = "selected_nav_id";
     private Fragment currentFragment;
+    private BottomNavigationView navigation;
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -36,9 +37,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
-        setFragment(R.id.navigation_home);
+        int seletedFragmentId = R.id.navigation_home;
+        if (savedInstanceState != null) {
+            seletedFragmentId = savedInstanceState.getInt(SELECTED_NAV_ID, seletedFragmentId);
+        }
+        setFragment(seletedFragmentId);
     }
 
     @Override
@@ -46,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateView(parent, name, context, attrs);
     }
 
-    private void createFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, fragment)
-                .commit();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_NAV_ID, navigation.getSelectedItemId());
+        super.onSaveInstanceState(outState);
     }
 
     private void setFragment(final int itemId) {
@@ -119,6 +124,5 @@ public class MainActivity extends AppCompatActivity {
                 .show(fragment)
                 .commit();
     }
-
 
 }
