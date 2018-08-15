@@ -30,7 +30,7 @@
     <string name="clear_bookmarks_message">Are you sure you want to clear all your bookmarked locations?</string>
     <string name="degrees">%1$s &#176; / %2$s &#176;</string>
     <string name="no_network">No network connection.</string>
-    <string name="forecast">Forecast</string>
+    <string name="forecast">5 Days Forecast</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

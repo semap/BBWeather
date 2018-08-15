@@ -14,9 +14,9 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bookmarked_cities"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="94dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="6dp"
         android:overScrollMode="never" />
 </RelativeLayout>
