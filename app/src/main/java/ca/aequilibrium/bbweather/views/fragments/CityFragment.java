@@ -57,7 +57,7 @@ public class CityFragment extends Fragment {
         });
 
         cityViewModel.setCoord(coord);
-
+        setupToolbar();
         return view;
     }
 
@@ -65,7 +65,6 @@ public class CityFragment extends Fragment {
         cityViewModel.getCurrentWeatherObservable().observe(this, new Observer<CurrentWeather>() {
             @Override
             public void onChanged(@Nullable CurrentWeather currentWeather) {
-                Log.d(TAG, "got current weather");
                 updateWeatherUI(currentWeather);
             }
         });
@@ -79,8 +78,17 @@ public class CityFragment extends Fragment {
     }
 
     private void updateWeatherUI(CurrentWeather currentWeather) {
-        Log.d(TAG, "got current weather");
         toolbar.setTitle(currentWeather.getName());
+    }
+
+    private void setupToolbar() {
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
     }
 
 }

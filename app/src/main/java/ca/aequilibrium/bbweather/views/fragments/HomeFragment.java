@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         cityFragment.setCoord(bookmarkedCity.getCoord());
         fragmentManager.beginTransaction()
                 .add(R.id.homeRoot, cityFragment, CityFragment.TAG)
-                .addToBackStack(null)
+                .addToBackStack(CityFragment.TAG)
                 .commit();
     }
 

@@ -21,7 +21,7 @@ public interface BookmarkedLocationManager {
     // remove a bookmarked city
     void remove(BookmarkedCity bookmarkedCity, ResultCallback<Boolean> resultCallback);
 
-    void removeAll(ResultCallback<Boolean> resultCallback);
+    void removeAll(ResultCallback<Integer> resultCallback);
 
     // The observable of the bookmarkedCities, this is the majoy "output" of the this manager
     LiveData<List<BookmarkedCity>> getBookmarkedCities();
