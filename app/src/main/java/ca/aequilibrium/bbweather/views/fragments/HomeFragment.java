@@ -17,9 +17,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,7 +38,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +48,8 @@ import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.utils.Message;
+import ca.aequilibrium.bbweather.utils.ResultCallback;
+import ca.aequilibrium.bbweather.utils.TaskResult;
 import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
 import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapter;
 import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapterListener;
@@ -52,8 +59,10 @@ import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapterListener;
  */
 public class HomeFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, BookmarkedCitiesAdapterListener {
 
-    private static final String TAG = HomeFragment.class.getSimpleName();
+    public static final String TAG = HomeFragment.class.getSimpleName();
     private static final int REQUEST_LOCATION_PERMISSIONS = 102;
+    private Button searchButton;
+    private EditText searchEditText;
     private MapView mapView;
     private GoogleMap googleMap;
     private HomeViewModel homeViewModel;
@@ -70,6 +79,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         clearMapMarkers();
         mapView.getMapAsync(this);
 
+        searchEditText = view.findViewById(R.id.search_text);
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE || i == EditorInfo.IME_ACTION_NEXT){
+                    onMapSearch(textView.getText().toString());
+                }
+                return false;
+            }
+        });
+        searchButton = view.findViewById(R.id.map_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onMapSearch(searchEditText.getText().toString());
+            }
+        });
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         bookmarkedCitiesAdapter = new BookmarkedCitiesAdapter();
         bookmarkedCitiesAdapter.setListener(this);
@@ -236,5 +262,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
                 .position(new LatLng(coord.getLat(), coord.getLon())));
         marker.setTag(bookmarkedCity);
         markerMap.put(bookmarkedCity.getId(), marker);
+    }
+
+    private void onMapSearch(String text) {
+        Log.d(TAG, "search " + text);
+        hideKeyboard();
+        if (text == null) {
+            return;
+        }
+
+        homeViewModel.getCoordFromName(text, new ResultCallback<Coord>() {
+            @Override
+            public void callback(@NonNull TaskResult<Coord> taskResult) {
+                Coord coord = taskResult.result;
+                if (coord != null) {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(coord.getLat(), coord.getLon())));
+                }
+            }
+        });
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

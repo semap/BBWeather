@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.views.fragments.HelpFragment;
@@ -78,10 +79,11 @@ public class MainActivity extends AppCompatActivity {
             showFragment(nextFragment);
             currentFragment = nextFragment;
         }
+        hideKeyboard();
     }
 
     private Fragment getHomeFragment() {
-        String tag = "home";
+        String tag = HomeFragment.TAG;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new HomeFragment();
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Fragment getSettingsFragment() {
-        String tag = "settings";
+        String tag = SettingsFragment.TAG;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new SettingsFragment();
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Fragment getHelpFragment() {
-        String tag = "help";
+        String tag = HelpFragment.TAG;
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
         if (fragment == null) {
             fragment = new HelpFragment();
@@ -122,6 +124,14 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .show(fragment)
                 .commit();
+    }
+
+    private void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
 }

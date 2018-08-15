@@ -14,7 +14,7 @@ import ca.aequilibrium.bbweather.R;
  * A simple {@link Fragment} subclass.
  */
 public class HelpFragment extends Fragment {
-
+    public static final String TAG = HelpFragment.class.getSimpleName();
     private WebView webView;
 
     @Override
