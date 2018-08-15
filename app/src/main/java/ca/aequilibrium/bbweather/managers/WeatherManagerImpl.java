@@ -8,6 +8,7 @@ import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import ca.aequilibrium.bbweather.Constants;
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.models.CurrentWeather;
@@ -30,7 +31,7 @@ public class WeatherManagerImpl implements WeatherManager {
     @Override
     public void getCurrentWeather(final Coord coord, final Boolean isMetric, final ResultCallback<CurrentWeather> resultCallback) {
         try {
-            URL url = buildURL(coord, isMetric, context.getString(R.string.open_weather_map_current_weather_path));
+            URL url = buildURL(coord, isMetric, Constants.OPEN_WEATHER_MAP_API_WEATHER_PATH);
             HttpGetAsyncTask<CurrentWeather> request = new HttpGetAsyncTask<>(CurrentWeather.class, resultCallback);
             request.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
         } catch (MalformedURLException e) {
@@ -44,7 +45,7 @@ public class WeatherManagerImpl implements WeatherManager {
     @Override
     public void getForecasts(Coord coord, Boolean isMetric, ResultCallback<ForecastInfo> resultCallback) {
         try {
-            URL url = buildURL(coord, isMetric, context.getString(R.string.open_weather_map_forecast_path));
+            URL url = buildURL(coord, isMetric, Constants.OPEN_WEATHER_MAP_API_FORECAST_PATH);
             HttpGetAsyncTask<ForecastInfo> request = new HttpGetAsyncTask<>(ForecastInfo.class, resultCallback);
             request.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
         } catch (MalformedURLException e) {
@@ -56,7 +57,7 @@ public class WeatherManagerImpl implements WeatherManager {
     }
 
     private URL buildURL(final Coord coord, final Boolean isMetric, String path) throws MalformedURLException {
-        Uri.Builder builtUri = Uri.parse(context.getString(R.string.open_weather_map_base_url))
+        Uri.Builder builtUri = Uri.parse(Constants.OPEN_WEATHER_MAP_API_BASE_URL)
                 .buildUpon()
                 .appendPath(path)
                 .appendQueryParameter("appid", context.getString(R.string.open_weather_map_api_key))
