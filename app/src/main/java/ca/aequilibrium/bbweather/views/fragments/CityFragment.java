@@ -10,18 +10,24 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.models.CurrentWeather;
 import ca.aequilibrium.bbweather.models.ForecastInfo;
+import ca.aequilibrium.bbweather.models.Weather;
 import ca.aequilibrium.bbweather.utils.Message;
 import ca.aequilibrium.bbweather.viewmodels.CityViewModel;
 import ca.aequilibrium.bbweather.views.adapters.ForecastsAdapter;
@@ -37,8 +43,15 @@ public class CityFragment extends Fragment {
     private Toolbar toolbar;
     private ImageView collapsedIcon;
     private Coord coord;
+    private boolean isMetric;
     private ForecastsAdapter forecastsAdapter;
     private RecyclerView forecastList;
+    private TextView temperatureTextView;
+    private TextView rainChanceTextView;
+    private TextView humidityTextView;
+    private TextView windTextView;
+    private TextView descriptionTextView;
+    private TextView mainTextView;
 
     public void setCoord(Coord coord) {
         this.coord = coord;
@@ -57,6 +70,13 @@ public class CityFragment extends Fragment {
         forecastList = view.findViewById(R.id.forecast_list);
         forecastList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         forecastList.setAdapter(forecastsAdapter);
+
+        temperatureTextView = view.findViewById(R.id.temperature_value_text);
+        rainChanceTextView = view.findViewById(R.id.rain_chance_value_text);
+        humidityTextView = view.findViewById(R.id.humidity_value_text);
+        windTextView = view.findViewById(R.id.wind_value_text);
+        descriptionTextView = view.findViewById(R.id.description_text);
+        mainTextView = view.findViewById(R.id.main_text);
 
         cityViewModel = ViewModelProviders.of(this).get(CityViewModel.class);
         subscribeToCurrentWeather();
@@ -99,18 +119,47 @@ public class CityFragment extends Fragment {
 
         cityViewModel.getIsMetricObservable().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(@Nullable Boolean isMetric) {
-                if (isMetric != null) {
-                    forecastsAdapter.setMetric(isMetric);
+            public void onChanged(@Nullable Boolean newValue) {
+                if (newValue != null) {
+                    forecastsAdapter.setMetric(newValue);
+                    isMetric = newValue;
                 }
             }
         });
-
-
     }
 
     private void updateWeatherUI(CurrentWeather currentWeather) {
         toolbar.setTitle(currentWeather.getName());
+        humidityTextView
+                .setText(getString(R.string.percentage, String.valueOf(currentWeather.getMain().getHumidity())));
+        if (currentWeather.getRain() != null) {
+            rainChanceTextView
+                    .setText(getString(R.string.volume_mm, String.valueOf(currentWeather.getRain().getVolume())));
+        } else {
+            rainChanceTextView.setText(getString(R.string.volume_mm, String.valueOf(0)));
+        }
+        if (isMetric) {
+            temperatureTextView
+                    .setText(getString(R.string.metric_temp, String.valueOf(currentWeather.getMain().getTemp())));
+            windTextView.setText(
+                    getString(R.string.metric_speed, String.valueOf(currentWeather.getWind().getSpeed())));
+        } else {
+            temperatureTextView
+                    .setText(getString(R.string.imperial_temp,
+                            String.valueOf(currentWeather.getMain().getTemp())));
+            windTextView.setText(
+                    getString(R.string.imperial_speed, String.valueOf(currentWeather.getWind().getSpeed())));
+        }
+
+        List<String> weatherNames = new ArrayList<>();
+        for (Weather weather : currentWeather.getWeather()) {
+            weatherNames.add(weather.getMain());
+        }
+        mainTextView.setText(TextUtils.join(", ", weatherNames));
+        if (!currentWeather.getWeather().isEmpty()) {
+            Weather weather = currentWeather.getWeather().get(0);
+            descriptionTextView.setText(weather.getDescription());
+        }
     }
 
     private void setupToolbar() {

@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+        clearMapMarkers();
         mapView.getMapAsync(this);
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
@@ -78,13 +79,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
                 .setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         bookmarkedList.setAdapter(bookmarkedCitiesAdapter);
 
-        subscribeToViewModel();
         return view;
-
     }
 
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        subscribeToViewModel();
         this.googleMap.setOnMapLongClickListener(this);
 
         if (ActivityCompat.checkSelfPermission(getContext(), permission.ACCESS_FINE_LOCATION)
@@ -207,12 +207,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
             for (BookmarkedCity bookmarkedCity : bookmarkedCities) {
                 bookmarkedCityIds.remove(bookmarkedCity.getId());
                 if (!markerMap.containsKey(bookmarkedCity.getId())) {
-                    Coord coord = bookmarkedCity.getCoord();
-                    Marker marker = googleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                            .position(new LatLng(coord.getLat(), coord.getLon())));
-                    marker.setTag(bookmarkedCity);
-                    markerMap.put(bookmarkedCity.getId(), marker);
+
+                    placeMarker(bookmarkedCity);
                 }
             }
 
@@ -230,5 +226,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         for (Marker marker : markerMap.values()) {
             marker.remove();
         }
+        markerMap.clear();
+    }
+
+    private void placeMarker(BookmarkedCity bookmarkedCity) {
+        Coord coord = bookmarkedCity.getCoord();
+        Marker marker = googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .position(new LatLng(coord.getLat(), coord.getLon())));
+        marker.setTag(bookmarkedCity);
+        markerMap.put(bookmarkedCity.getId(), marker);
     }
 }

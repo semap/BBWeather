@@ -75,8 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp">
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -87,23 +87,15 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="sans-serif-light"
-                    android:text="@string/temperature"
-                    android:textSize="18sp" />
-
-                <TextView
                     android:id="@+id/temperature_value_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/primary_dark"
-                    android:textSize="20sp" />
+                    android:textSize="42sp" />
 
                 <TextView
                     android:id="@+id/temp_diff_text"
