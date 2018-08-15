@@ -12,9 +12,9 @@ import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.Coord;
 import ca.aequilibrium.bbweather.models.CurrentWeather;
 import ca.aequilibrium.bbweather.models.ForecastInfo;
-import ca.aequilibrium.bbweather.utils.asynctasks.HttpGetAsyncTask;
 import ca.aequilibrium.bbweather.utils.ResultCallback;
 import ca.aequilibrium.bbweather.utils.TaskResult;
+import ca.aequilibrium.bbweather.utils.asynctasks.HttpGetAsyncTask;
 
 public class WeatherManagerImpl implements WeatherManager {
 

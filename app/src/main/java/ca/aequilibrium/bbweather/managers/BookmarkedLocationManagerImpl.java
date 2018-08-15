@@ -12,9 +12,9 @@ import java.util.List;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
-import ca.aequilibrium.bbweather.utils.asynctasks.CallbackAsyncTask;
 import ca.aequilibrium.bbweather.utils.ResultCallback;
 import ca.aequilibrium.bbweather.utils.TaskResult;
+import ca.aequilibrium.bbweather.utils.asynctasks.CallbackAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.GeocodeBookmarkedCityAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.LoadBookmarkedCitiesAsyncTask;
 import ca.aequilibrium.bbweather.utils.asynctasks.SaveBookmarkedCitiesAsyncTask;
@@ -26,11 +26,9 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
 
     private static final String BOOKMARKS_FILE_NAME = "bookmarkedcity.json";
     private static final String TAG = BookmarkedLocationManagerImpl.class.getSimpleName();
-
+    private final MutableLiveData<List<BookmarkedCity>> bookmarkedCities;
     // the Context is for getting Geocoder, it is needed for decode the LatLng
     private Context context;
-
-    private final MutableLiveData<List<BookmarkedCity>> bookmarkedCities;
 
 
     public BookmarkedLocationManagerImpl(final Context context) {
@@ -111,6 +109,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
 
     /**
      * Async insert a bookmarked city
+     *
      * @param city
      * @param resultCallback
      */
@@ -136,7 +135,8 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
     }
 
     /**
-     *  Save the boookmarked cities to the local file
+     * Save the boookmarked cities to the local file
+     *
      * @throws IOException
      */
     private void asyncSaveBookmarkedCities(final List<BookmarkedCity> cities, ResultCallback<List<BookmarkedCity>> resultCallback) {
@@ -148,7 +148,7 @@ public class BookmarkedLocationManagerImpl implements BookmarkedLocationManager 
     /**
      * Async read the bookmarked cities from the local file.
      */
-    private void initBookmarkedCities()  {
+    private void initBookmarkedCities() {
 
         LoadBookmarkedCitiesAsyncTask asyncTask = new LoadBookmarkedCitiesAsyncTask(context, new ResultCallback<List<BookmarkedCity>>() {
             @Override

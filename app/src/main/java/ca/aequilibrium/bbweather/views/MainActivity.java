@@ -1,15 +1,14 @@
 package ca.aequilibrium.bbweather.views;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
-
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.views.fragments.HelpFragment;

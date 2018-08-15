@@ -7,13 +7,13 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import ca.aequilibrium.bbweather.managers.BookmarkedLocationManager;
+import ca.aequilibrium.bbweather.managers.ManagerContext;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
-import ca.aequilibrium.bbweather.managers.BookmarkedLocationManager;
 import ca.aequilibrium.bbweather.utils.Message;
 import ca.aequilibrium.bbweather.utils.MessageType;
 import ca.aequilibrium.bbweather.utils.ResultCallback;
-import ca.aequilibrium.bbweather.managers.ManagerContext;
 import ca.aequilibrium.bbweather.utils.SingleLiveEvent;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 

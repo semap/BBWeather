@@ -48,7 +48,8 @@ public class LoadBookmarkedCitiesAsyncTask extends CallbackAsyncTask<String, Voi
             BufferedReader br = new BufferedReader(new InputStreamReader(new BufferedInputStream(fileInputStream)));
 
             Gson gson = new Gson();
-            Type listType = new TypeToken<List<BookmarkedCity>>() {}.getType();
+            Type listType = new TypeToken<List<BookmarkedCity>>() {
+            }.getType();
 
             List<BookmarkedCity> list = gson.fromJson(br, listType);
             return new TaskResult<>(list);

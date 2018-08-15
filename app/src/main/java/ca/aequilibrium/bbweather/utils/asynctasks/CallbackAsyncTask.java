@@ -2,13 +2,12 @@ package ca.aequilibrium.bbweather.utils.asynctasks;
 
 import android.os.AsyncTask;
 
-import java.net.URL;
-
 import ca.aequilibrium.bbweather.utils.ResultCallback;
 import ca.aequilibrium.bbweather.utils.TaskResult;
 
 /**
  * A aync task with a callback. When the task is done, it will invoke the callback with the result including the status.
+ *
  * @param <Params>
  * @param <Progress>
  * @param <Result>

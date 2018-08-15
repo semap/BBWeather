@@ -26,7 +26,7 @@ public class GeocodeBookmarkedCityAsyncTask extends CallbackAsyncTask<Coord, Voi
     @Override
     protected TaskResult<BookmarkedCity> doInBackground(Coord... coords) {
         if (coords == null || coords.length == 0) {
-            return new TaskResult<BookmarkedCity>((BookmarkedCity)null);
+            return new TaskResult<BookmarkedCity>((BookmarkedCity) null);
         }
 
         Coord coord = coords[0];
