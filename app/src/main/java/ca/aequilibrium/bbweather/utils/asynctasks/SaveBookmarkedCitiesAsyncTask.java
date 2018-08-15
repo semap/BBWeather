@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
@@ -15,18 +16,19 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
 
 public class SaveBookmarkedCitiesAsyncTask extends CallbackAsyncTask<List<BookmarkedCity>, Void, List<BookmarkedCity>> {
     private static final String TAG = SaveBookmarkedCitiesAsyncTask.class.getSimpleName();
-    private Context context;
+    private WeakReference<Context> contextRef;
     private String filename;
 
     public SaveBookmarkedCitiesAsyncTask(Context context, String filename, ResultCallback<List<BookmarkedCity>> resultCallback) {
         super(resultCallback);
         this.filename = filename;
-        this.context = context;
+        this.contextRef = new WeakReference<>(context);
     }
 
     @Override
     protected TaskResult<List<BookmarkedCity>> doInBackground(List<BookmarkedCity>... lists) {
-        if (lists == null) {
+        Context context = contextRef.get();
+        if (lists == null || context == null) {
             Exception exception = new IllegalArgumentException("Can't save the null bookmarked city list.");
             return new TaskResult<List<BookmarkedCity>>(exception);
         }

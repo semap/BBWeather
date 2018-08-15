@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +26,17 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
  */
 public class LoadBookmarkedCitiesAsyncTask extends CallbackAsyncTask<String, Void, List<BookmarkedCity>> {
     private static final String TAG = LoadBookmarkedCitiesAsyncTask.class.getSimpleName();
-    private Context context;
+    private WeakReference<Context> contextRef;
 
     public LoadBookmarkedCitiesAsyncTask(Context context, ResultCallback<List<BookmarkedCity>> resultCallback) {
         super(resultCallback);
-        this.context = context;
+        this.contextRef = new WeakReference<>(context);
     }
 
     @Override
     protected TaskResult<List<BookmarkedCity>> doInBackground(String... strings) {
-        if (strings == null || strings.length == 0) {
+        Context context = contextRef.get();
+        if (strings == null || strings.length == 0 || context == null) {
             List<BookmarkedCity> result = new ArrayList<>();
             return new TaskResult<>(result);
         }

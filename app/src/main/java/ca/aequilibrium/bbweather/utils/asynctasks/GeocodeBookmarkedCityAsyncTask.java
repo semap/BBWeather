@@ -5,6 +5,7 @@ import android.location.Address;
 import android.location.Geocoder;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -16,22 +17,23 @@ import ca.aequilibrium.bbweather.utils.TaskResult;
 
 public class GeocodeBookmarkedCityAsyncTask extends CallbackAsyncTask<Coord, Void, BookmarkedCity> {
     private static final String UNKNOWN_CITY_NAME = "Unknown";
-    private Context context;
+    private WeakReference<Context> contextRef;
 
     public GeocodeBookmarkedCityAsyncTask(Context context, ResultCallback<BookmarkedCity> resultCallback) {
         super(resultCallback);
-        this.context = context;
+        this.contextRef = new WeakReference<>(context);
     }
 
     @Override
     protected TaskResult<BookmarkedCity> doInBackground(Coord... coords) {
-        if (coords == null || coords.length == 0) {
+        Context context = contextRef.get();
+        if (coords == null || coords.length == 0 || context == null) {
             return new TaskResult<BookmarkedCity>((BookmarkedCity) null);
         }
 
         Coord coord = coords[0];
         try {
-            String cityName = getCityName(coord);
+            String cityName = getCityName(coord, context);
             if (cityName == null) {
                 cityName = UNKNOWN_CITY_NAME;
             }
@@ -46,7 +48,7 @@ public class GeocodeBookmarkedCityAsyncTask extends CallbackAsyncTask<Coord, Voi
         }
     }
 
-    private String getCityName(final Coord location) throws IOException {
+    private String getCityName(final Coord location, final Context context) throws IOException {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         String cityName = null;
