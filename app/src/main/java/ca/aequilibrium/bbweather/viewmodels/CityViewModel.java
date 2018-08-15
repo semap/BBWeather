@@ -92,6 +92,10 @@ public class CityViewModel extends AndroidViewModel {
         return currentWeather;
     }
 
+    public LiveData<ForecastInfo> getForecastsObservable() {
+        return forecastInfo;
+    }
+
     public LiveData<Bitmap> getWeatherIconObservable() {
         return this.weatherIcon;
     }
@@ -99,6 +103,11 @@ public class CityViewModel extends AndroidViewModel {
     public SingleLiveEvent<Message> getMessageObservable() {
         return messageObservable;
     }
+
+    public LiveData<Boolean> getIsMetricObservable() {
+        return isMetric;
+    }
+
 
     public void setCoord(final Coord coord) {
         this.coord.setValue(coord);

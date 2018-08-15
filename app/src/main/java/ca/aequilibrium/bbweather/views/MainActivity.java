@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 nextFragment = getSettingsFragment();
                 break;
             case R.id.navigation_help:
-                nextFragment = getSettingsFragment();
+                nextFragment = getHelpFragment();
                 break;
         }
         if (nextFragment != null) {

@@ -26,10 +26,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
@@ -50,6 +58,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
     private GoogleMap googleMap;
     private HomeViewModel homeViewModel;
     private BookmarkedCitiesAdapter bookmarkedCitiesAdapter;
+    private Map<String, Marker> markerMap = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -147,6 +156,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
                     Log.e(TAG, "unable to load bookmarked cities");
                 } else {
                     bookmarkedCitiesAdapter.setBookmarkedCities(bookmarkedCities);
+                    updateMapMarkers(bookmarkedCities);
                     Log.i(TAG, "count: " + bookmarkedCities.size());
                 }
             }
@@ -180,5 +190,45 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onRemoveBookMarkCityButtonClicked(BookmarkedCity bookmarkedCity) {
         homeViewModel.removeBookmarkedCity(bookmarkedCity);
+    }
+
+    private void updateMapMarkers(List<BookmarkedCity> bookmarkedCities) {
+        if (googleMap == null || bookmarkedCities == null) {
+            return;
+        }
+
+        if (bookmarkedCities.isEmpty()) {
+            clearMapMarkers();
+        } else {
+
+            Set<String> bookmarkedCityIds = new HashSet<>();
+            bookmarkedCityIds.addAll(markerMap.keySet());
+
+            for (BookmarkedCity bookmarkedCity : bookmarkedCities) {
+                bookmarkedCityIds.remove(bookmarkedCity.getId());
+                if (!markerMap.containsKey(bookmarkedCity.getId())) {
+                    Coord coord = bookmarkedCity.getCoord();
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .position(new LatLng(coord.getLat(), coord.getLon())));
+                    marker.setTag(bookmarkedCity);
+                    markerMap.put(bookmarkedCity.getId(), marker);
+                }
+            }
+
+            // remove old markers
+            for (String id: bookmarkedCityIds) {
+                Marker marker = markerMap.get(id);
+                if (marker != null) {
+                    marker.remove();
+                }
+            }
+        }
+    }
+
+    private void clearMapMarkers() {
+        for (Marker marker : markerMap.values()) {
+            marker.remove();
+        }
     }
 }
