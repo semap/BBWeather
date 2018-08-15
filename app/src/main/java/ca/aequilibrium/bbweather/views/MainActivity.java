@@ -1,34 +1,44 @@
 package ca.aequilibrium.bbweather.views;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 
-import java.util.List;
-
 import ca.aequilibrium.bbweather.R;
-import ca.aequilibrium.bbweather.models.BookmarkedCity;
-import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
 import ca.aequilibrium.bbweather.views.fragments.CityFragment;
+import ca.aequilibrium.bbweather.views.fragments.HelpFragment;
 import ca.aequilibrium.bbweather.views.fragments.HomeFragment;
+import ca.aequilibrium.bbweather.views.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private Fragment currentFragment;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            setFragment(item.getItemId());
+            return true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showHome();
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
+        setFragment(R.id.navigation_home);
     }
 
     @Override
@@ -36,16 +46,71 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateView(parent, name, context, attrs);
     }
 
-    private void showHome() {
-        Fragment homeFragment = new CityFragment();
-        createFragment(homeFragment);
-        showFragment(homeFragment);
-    }
-
-
     private void createFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    private void setFragment(final int itemId) {
+        if (currentFragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .hide(currentFragment)
+                    .commit();
+        }
+        Fragment nextFragment = null;
+        switch (itemId) {
+            case R.id.navigation_home:
+                nextFragment = getHomeFragment();
+                break;
+            case R.id.navigation_settings:
+                nextFragment = getSettingsFragment();
+                break;
+            case R.id.navigation_help:
+                nextFragment = getSettingsFragment();
+                break;
+        }
+        if (nextFragment != null) {
+            showFragment(nextFragment);
+            currentFragment = nextFragment;
+        }
+    }
+
+    private Fragment getHomeFragment() {
+        String tag = "home";
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new HomeFragment();
+            fragment.setRetainInstance(true);
+            addFragment(fragment, tag);
+        }
+        return fragment;
+    }
+
+    private Fragment getSettingsFragment() {
+        String tag = "settings";
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new SettingsFragment();
+            addFragment(fragment, tag);
+        }
+        return fragment;
+    }
+
+    private Fragment getHelpFragment() {
+        String tag = "help";
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment == null) {
+            fragment = new HelpFragment();
+            addFragment(fragment, tag);
+        }
+        return fragment;
+    }
+
+    private void addFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, fragment, tag)
                 .commit();
     }
 
@@ -54,5 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 .show(fragment)
                 .commit();
     }
+
 
 }
