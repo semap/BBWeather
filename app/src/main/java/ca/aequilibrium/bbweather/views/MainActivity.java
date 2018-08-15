@@ -17,6 +17,7 @@ import java.util.List;
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
+import ca.aequilibrium.bbweather.views.fragments.CityFragment;
 import ca.aequilibrium.bbweather.views.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showHome() {
-        Fragment homeFragment = new HomeFragment();
+        Fragment homeFragment = new CityFragment();
         createFragment(homeFragment);
         showFragment(homeFragment);
     }
