@@ -30,15 +30,13 @@ public class CityFragment extends Fragment {
     public static final String TAG = CityFragment.class.getSimpleName();
 
     private CityViewModel cityViewModel;
-
     private Toolbar toolbar;
     private ImageView collapsedIcon;
+    private Coord coord;
 
-
-    public CityFragment() {
-        // Required empty public constructor
+    public void setCoord(Coord coord) {
+        this.coord = coord;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,8 +49,6 @@ public class CityFragment extends Fragment {
 
         cityViewModel = ViewModelProviders.of(this).get(CityViewModel.class);
         subscribeToCurrentWeather();
-        cityViewModel.setCoord(new Coord(36.167, -115.14));
-
 
         cityViewModel.getMessageObservable().observe(this, new Observer<Message>() {
             @Override
@@ -60,6 +56,8 @@ public class CityFragment extends Fragment {
                 Toast.makeText(getContext(), message.getBody(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        cityViewModel.setCoord(coord);
 
         return view;
     }
@@ -84,7 +82,6 @@ public class CityFragment extends Fragment {
     private void updateWeatherUI(CurrentWeather currentWeather) {
         Log.d(TAG, "got current weather");
         toolbar.setTitle(currentWeather.getName());
-
     }
 
 }

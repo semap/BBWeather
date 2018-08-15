@@ -10,11 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.Manifest.permission;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -26,39 +29,44 @@ import java.util.List;
 import ca.aequilibrium.bbweather.R;
 import ca.aequilibrium.bbweather.models.BookmarkedCity;
 import ca.aequilibrium.bbweather.models.Coord;
+import ca.aequilibrium.bbweather.utils.Message;
 import ca.aequilibrium.bbweather.viewmodels.HomeViewModel;
+import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapter;
+import ca.aequilibrium.bbweather.views.adapters.BookmarkedCitiesAdapterListener;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, BookmarkedCitiesAdapterListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
-    private MapView mMapView;
-    private GoogleMap mMap;
-    private HomeViewModel mHomeViewModel;
+    private MapView mapView;
+    private GoogleMap googleMap;
+    private HomeViewModel homeViewModel;
+    private BookmarkedCitiesAdapter bookmarkedCitiesAdapter;
 
     private static final int REQUEST_LOCATION_PERMISSIONS = 102;
-
-
-    public HomeFragment() {
-        Log.d(TAG, "Create HomeFragment");
-        // Required empty public constructor
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mMapView = view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
+        mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
-        mHomeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        subscribeToBookmarkedLocations();
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        bookmarkedCitiesAdapter = new BookmarkedCitiesAdapter();
+        bookmarkedCitiesAdapter.setListener(this);
+
+        RecyclerView bookmarkedList = view.findViewById(R.id.bookmarked_cities);
+        bookmarkedList
+                .setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        bookmarkedList.setAdapter(bookmarkedCitiesAdapter);
+
+        subscribeToViewModel();
         return view;
 
     }
@@ -83,26 +91,26 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
         requestPermissionIfNecessary();
-        mMap.setOnMapLongClickListener(this);
+        this.googleMap.setOnMapLongClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        mapView.onResume();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 
     @Override
     public void onDestroy() {
-        mMapView.onDestroy();
+        mapView.onDestroy();
         super.onDestroy();
     }
 
@@ -112,35 +120,50 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Google
         Log.d(TAG, "user long clicks on the map");
 
         // the logic of parsing the latitude and longitude should not be here in the presentation layer
-        mHomeViewModel.addBookmarkedLocationByCoord(new Coord(latLng.latitude, latLng.longitude));
-
-        FragmentManager fragmentManager = getFragmentManager();
-
-        Fragment cityFragment = fragmentManager.findFragmentByTag(CityFragment.TAG);
-        if (cityFragment == null) {
-            cityFragment = new CityFragment();
-        }
-        fragmentManager.beginTransaction()
-                .add(R.id.fragment_container, cityFragment, CityFragment.TAG)
-                .addToBackStack(null)
-                .commit();
-
-
+        Coord coord = new Coord(latLng.latitude, latLng.longitude);
+        homeViewModel.addBookmarkedCityByCoord(coord);
     }
 
-    private void subscribeToBookmarkedLocations() {
-        mHomeViewModel.getBookmarkedCityObservable().observe(this, new Observer<List<BookmarkedCity>>() {
+    private void subscribeToViewModel() {
+        homeViewModel.getBookmarkedCityObservable().observe(this, new Observer<List<BookmarkedCity>>() {
             @Override
             public void onChanged(@Nullable List<BookmarkedCity> bookmarkedCities) {
                 if (bookmarkedCities == null) {
                     Log.e(TAG, "unable to load bookmarked cities");
                 } else {
+                    bookmarkedCitiesAdapter.setBookmarkedCities(bookmarkedCities);
                     Log.i(TAG, "count: " +  bookmarkedCities.size());
                 }
-
-
             }
         });
 
+        homeViewModel.getMessageObservable().observe(this, new Observer<Message>() {
+            @Override
+            public void onChanged(@Nullable Message message) {
+                Toast.makeText(getContext(), message.getBody(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onBookmarkedCityClicked(BookmarkedCity bookmarkedCity) {
+        FragmentManager fragmentManager = getFragmentManager();
+
+        CityFragment cityFragment = (CityFragment) fragmentManager.findFragmentByTag(CityFragment.TAG);
+        if (cityFragment == null) {
+            cityFragment = new CityFragment();
+        }
+
+        cityFragment.setCoord(bookmarkedCity.getCoord());
+        fragmentManager.beginTransaction()
+                .add(R.id.homeRoot, cityFragment, CityFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onRemoveBookMarkCityButtonClicked(BookmarkedCity bookmarkedCity) {
+        homeViewModel.removeBookmarkedCity(bookmarkedCity);
     }
 }

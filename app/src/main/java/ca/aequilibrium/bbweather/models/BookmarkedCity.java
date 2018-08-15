@@ -21,7 +21,7 @@ public class BookmarkedCity {
         this.name = name;
     }
 
-    public Coord getLocation() {
+    public Coord getCoord() {
         return coord;
     }
 
